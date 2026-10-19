@@ -30,17 +30,17 @@ sleep_time_magn = 120
 gps_testi_id = 35
 low_rate_rtk_id = 79
 
-acc_acilis_successfull_needed = 2
+acc_acilis_successfull_needed = 10
 
 max_ok_acc_norm_value = 9.82
 min_ok_acc_norm_value = 9.78
 max_best_acc_norm_value = 9.81
 min_best_acc_norm_value = 9.79
 
-max_roll_value = 2
-min_roll_value = -2
-max_pitch_value = 2
-min_pitch_value = -2
+max_roll_value = 0.08
+min_roll_value = -0.08
+max_pitch_value = 0.08
+min_pitch_value = -0.08
 
 tolerance_value = 0.1
 
