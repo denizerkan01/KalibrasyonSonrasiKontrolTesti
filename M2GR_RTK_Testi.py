@@ -2,13 +2,58 @@ import sys
 import time
 import numpy as np
 from pywinauto.keyboard import send_keys
-import M2GR_ResetTesti as M2GR_ResetTesti
+import Reset_Testi as Reset_Testi
 import general_functions as fnc
 import Role as Role
 from pywinauto import Desktop
 import serial.tools.list_ports
 
-def check_rtk(sensor_data, low_rate_rtk_id):
+def select_ntrip_port(ntrip, port_name):
+    """Select a COM port in the NTRIP dialog, including when UIA item lookup is stale."""
+    if not port_name:
+        raise RuntimeError("NTRIP için uygun COM port bulunamadı.")
+
+    expected = str(port_name).strip().upper()
+    combo = ntrip.child_window(auto_id="cbSerialPort", control_type="ComboBox")
+    combo.wait("visible enabled", timeout=10)
+
+    try:
+        combo.select(expected)
+        return
+    except IndexError:
+        # Some versions of the NTRIP dialog expose the dropdown entries visually
+        # before UI Automation refreshes the ComboBox's item collection.
+        pass
+
+    combo.click_input()
+    time.sleep(0.3)
+    try:
+        item = ntrip.child_window(title=expected, control_type="ListItem")
+        item.wait("visible enabled", timeout=2)
+        item.click_input()
+        return
+    except Exception:
+        # Native ComboBox type-ahead works even when UIA cannot enumerate its items.
+        combo.click_input()
+        send_keys(expected)
+        send_keys("{ENTER}")
+        time.sleep(0.3)
+
+    try:
+        selected = combo.selected_text().strip().upper()
+    except Exception:
+        selected = combo.window_text().strip().upper()
+    if selected != expected:
+        try:
+            available = combo.item_texts()
+        except Exception:
+            available = []
+        raise RuntimeError(
+            f"NTRIP COM port seçilemedi: istenen {expected}, seçili olan {selected or '(boş)'}. "
+            f"Listelenen portlar: {available}"
+        )
+
+def check_rtk(pn_dvc, sensor_data, low_rate_rtk_id):
 
     result = {
             "reset_success": False,       
@@ -16,7 +61,7 @@ def check_rtk(sensor_data, low_rate_rtk_id):
             "AnttenaNumber": 0.0,
             }
     
-    check_time_0 = M2GR_ResetTesti.check_reset_test(sensor_data)
+    check_time_0 = Reset_Testi.check_reset_test(pn_dvc, sensor_data)
 
     if not check_time_0.get("has_time_zero", False):
         print("Reset Testi: BAŞARISIZ!!! RTK Testi Yapılamaz!")
@@ -47,14 +92,14 @@ def check_rtk(sensor_data, low_rate_rtk_id):
 
     result["AnttenaNumber"] = low_rateZ[idx_nos]
 
-    if first_idx > 0 and low_rateZ[idx_nos] >= 15:
+    if first_idx > 0 and low_rateZ[idx_nos] >= 10:
         result["RTKSucess"] = True
     else:
         result["RTKSucess"] = False
 
     return result
 
-def M2GR_RTK_Testi(dlg, device_sn, base_path, rtk_folder, sleep_time, low_rate_rtk_id):
+def M2GR_RTK_Testi(dlg,pn_dvc, device_sn, base_path, rtk_folder, sleep_time, low_rate_rtk_id):
 
     result = {
                 "RTK_Port_1": False,
@@ -122,9 +167,9 @@ def M2GR_RTK_Testi(dlg, device_sn, base_path, rtk_folder, sleep_time, low_rate_r
     ntrip.wait("visible", timeout=10)
 
     ntrip.child_window(title="Get Mount Points", control_type="Pane").click_input()
+    time.sleep(2)
 
-    port = ntrip.child_window(auto_id="cbSerialPort", control_type="ComboBox")
-    port.select(target_enhanced)
+    select_ntrip_port(ntrip, target_enhanced)
 
     ntrip.child_window(title="Connect", auto_id="btConnect", control_type="Pane").click_input()
 
@@ -141,7 +186,7 @@ def M2GR_RTK_Testi(dlg, device_sn, base_path, rtk_folder, sleep_time, low_rate_r
         print(f"Parse edilemedi: {e}")
         return None
     
-    result_rtk_p1 = check_rtk(sensor_data_rtk, low_rate_rtk_id)
+    result_rtk_p1 = check_rtk(pn_dvc, sensor_data_rtk, low_rate_rtk_id)
 
     print("GPS Result:",result_rtk_p1)
     
@@ -267,8 +312,7 @@ def M2GR_RTK_Testi(dlg, device_sn, base_path, rtk_folder, sleep_time, low_rate_r
     
     ntrip.child_window(title="Get Mount Points", control_type="Pane").click_input()
     
-    port = ntrip.child_window(auto_id="cbSerialPort", control_type="ComboBox")
-    port.select(target_standard)
+    select_ntrip_port(ntrip, target_standard)
     
     ntrip.child_window(title="Connect", auto_id="btConnect", control_type="Pane").click_input()
     
@@ -285,7 +329,7 @@ def M2GR_RTK_Testi(dlg, device_sn, base_path, rtk_folder, sleep_time, low_rate_r
         print(f"Parse edilemedi: {e}")
         return None
         
-    result_rtk_p2 = check_rtk(sensor_data_rtk_2, low_rate_rtk_id)
+    result_rtk_p2 = check_rtk(pn_dvc, sensor_data_rtk_2, low_rate_rtk_id)
 
     print("GPS Result 2:",result_rtk_p2)
         

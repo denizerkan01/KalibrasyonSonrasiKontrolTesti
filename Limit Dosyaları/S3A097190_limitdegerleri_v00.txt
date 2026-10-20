@@ -17,6 +17,8 @@ gyro_z_folder = r"Gyro Z Testi"
 magn_norm_folder = r"Magn Testi"
 uart_folder = r"UART Testi"
 
+config_filename = "S310A-Config V1.0.txt"
+
 
 sleep_time_data_select = 5
 sleep_time_reset_testi = 5
@@ -24,7 +26,7 @@ sleep_time_acc_norm_gyro_acilis = 2
 sleep_time_acc_dondurme = 2
 sleep_time_euler_kontrol = 2
 sleep_time_gyroz = 60
-sleep_time_magn = 60
+sleep_time_magn = 2
 sleep_time_uart = 5
 
 acc_acilis_successfull_needed = 10
@@ -40,6 +42,13 @@ max_pitch_value = 0.08
 min_pitch_value = -0.08
 
 tolerance_value = 0.1
+
+Min_Magn_X_Value = -0.3
+Max_Magn_X_Value = 0.01
+Min_Magn_Y_Value = -0.3
+Max_Magn_Y_Value = 0.2
+Min_Magn_Z_Value = -0.01
+Max_Magn_Z_Value = 0.5
 
 checkbox_states_general = [
     ("Accelerometer", 1),

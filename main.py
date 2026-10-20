@@ -105,6 +105,8 @@ def create_folder(base_path):
     relative_paths = [
         "Device",
         "Test Sonuclari",
+        "Magn Testi Sonuclari",
+        "Config",
         os.path.join("UretimSonrasiTesti", "S3A", "example_folder", "Acc Norm Testi", "Acilis Testi"),
         os.path.join("UretimSonrasiTesti", "S3A", "example_folder", "Acc Norm Testi", "Dondurme Testi"),
         os.path.join("UretimSonrasiTesti", "S3A", "example_folder", "Data Select"),
@@ -121,6 +123,9 @@ def create_folder(base_path):
     relative_paths_m2_gr = [
         "Device",
         "Test Sonuclari",
+        "Anten Testi Sonuclari",
+        "Magn Testi Sonuclari",
+        "Config",
         os.path.join("UretimSonrasiTesti", "M2GR", "example_folder", "Acc Norm Testi", "Acilis Testi"),
         os.path.join("UretimSonrasiTesti", "M2GR", "example_folder", "Acc Norm Testi", "Dondurme Testi"),
         os.path.join("UretimSonrasiTesti", "M2GR", "example_folder", "Data Select"),

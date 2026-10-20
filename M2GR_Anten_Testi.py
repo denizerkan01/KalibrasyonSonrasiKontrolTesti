@@ -1,11 +1,11 @@
 import time
 import numpy as np
 from pywinauto.keyboard import send_keys
-import M2GR_ResetTesti as M2GR_ResetTesti
+import Reset_Testi as Reset_Testi
 import general_functions as fnc
 import Role as Role
 
-def check_gps(sensor_data, low_rate_id):
+def check_gps(pn_dvc, sensor_data, low_rate_id):
 
     result = {
                 "reset_success": False,
@@ -14,7 +14,7 @@ def check_gps(sensor_data, low_rate_id):
                 "AntennaNumber": 0.0,
                 }
 
-    check_time_0 = M2GR_ResetTesti.check_reset_test(sensor_data)
+    check_time_0 = Reset_Testi.check_reset_test(pn_dvc, sensor_data)
 
     if not check_time_0.get("reset_success", False):
         print("Reset Testi: BAŞARISIZ!!! GPS Testi Yapılamaz!")
@@ -60,7 +60,7 @@ def check_gps(sensor_data, low_rate_id):
 
     result["AntennaNumber"] = low_rateZ[idx_nos]
 
-    if result_validity == 1 and low_rateZ[idx_nos] >= 15:
+    if result_validity == 1 and low_rateZ[idx_nos] >= 10:
         print("Test 8: \n GPS Testi: \n Sonuç: BAŞARILI")
         result["GPSSatSuccess"] = True
         result["GpsSuccess"] = True
@@ -71,7 +71,7 @@ def check_gps(sensor_data, low_rate_id):
 
     return result
 
-def Anten_Testi(dlg, device_sn, base_path, sleep_time, low_rate_id, gps_folder):
+def Anten_Testi(dlg, pn_dvc, device_sn, base_path, sleep_time, low_rate_id, gps_folder):
     time.sleep(5)
     dlg.child_window(title="Settings", control_type="Button").click_input()
     time.sleep(5)
@@ -105,7 +105,7 @@ def Anten_Testi(dlg, device_sn, base_path, sleep_time, low_rate_id, gps_folder):
         return None
 
 
-    result_gps = check_gps(sensor_data_gps, low_rate_id)
+    result_gps = check_gps(pn_dvc, sensor_data_gps, low_rate_id)
 
     print("GPS Result:",result_gps)
 

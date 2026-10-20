@@ -17,6 +17,8 @@ gps_folder = r"GPS Testi"
 magn_norm_folder = r"Magn Testi"
 rs422_folder = r"RS422"
 
+config_filename = "M2GR-Config V1.0"
+
 sleep_time_data_select = 5
 sleep_time_reset_testi = 5
 sleep_time_acc_norm_gyro_acilis = 2
@@ -24,11 +26,12 @@ sleep_time_acc_dondurme = 2
 sleep_time_euler_kontrol = 2
 sleep_time_gyroz = 60
 sleep_time_gps = 180
+sleep_time_rtk = 180
 sleep_time_cift_anten = 300
-sleep_time_magn = 120
+sleep_time_magn = 5
 
 gps_testi_id = 35
-low_rate_rtk_id = 79
+low_rate_rtk_id = 67
 
 acc_acilis_successfull_needed = 10
 
@@ -41,6 +44,13 @@ max_roll_value = 0.08
 min_roll_value = -0.08
 max_pitch_value = 0.08
 min_pitch_value = -0.08
+
+Min_Magn_X_Value = -0.01
+Max_Magn_X_Value = 0.3
+Min_Magn_Y_Value = -0.5
+Max_Magn_Y_Value = 0.01
+Min_Magn_Z_Value = -0.1
+Max_Magn_Z_Value = 0.01
 
 tolerance_value = 0.1
 
@@ -98,7 +108,7 @@ checkbox_states_magn = [
     ("Low Rate", 1),
 ]
 
-checkbox_states_gps = [
+checkbox_states_anten_rtk = [
     ("Accelerometer", 1),
     ("Gyroscope", 1),
     ("Magnetometer", 0),
